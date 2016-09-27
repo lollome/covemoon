@@ -1,3 +1,4 @@
+package it.core.am;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
