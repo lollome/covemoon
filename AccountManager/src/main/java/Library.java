@@ -4,8 +4,11 @@
  *
  * @author 10035848, @date 27/09/16 11.08
  */
-public class Library {
-    public boolean someLibraryMethod() {
+public class Library 
+{
+    public boolean someLibraryMethod() 
+    {
+    	
         return true;
     }
 }
