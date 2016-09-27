@@ -6,18 +6,76 @@ package it.core.am;
  * @author 10035848, @date 27/09/16 11.08
  */
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import java.util.Locale;
 
-@SpringBootApplication
-public class Library 
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
+import org.springframework.web.servlet.i18n.SessionLocaleResolver;
+
+//@SpringBootApplication
+@EnableAutoConfiguration
+@ComponentScan
+@Configuration
+public class Library  extends WebMvcConfigurerAdapter
 {
-	public static void main(String[] args) {
-        SpringApplication.run(Library.class, args);
+	private Locale localLanguage = Locale.US;
+	 
+	public static void main(String[] args) 
+	{
+		Library l = new Library();
+		l.setLocalLanguage(("IT".equals(args[0]) ? Locale.ITALY : Locale.US));
+        
+		SpringApplication.run(l.getClass(), args);
     }
 
+	public void addViewControllers(ViewControllerRegistry registry) 
+	{
+	    registry.addViewController("/login").setViewName("login");
+	}
+	
+	@Bean
+	public LocaleResolver localeResolver() 
+	{
+	    SessionLocaleResolver slr = new SessionLocaleResolver();
+	    
+	    slr.setDefaultLocale(getLocalLanguage());
+	    
+	    return slr;
+	}
+	
+	
+
+	public Locale getLocalLanguage() {
+		return localLanguage;
+	}
+
+	public void setLocalLanguage(Locale localLanguage) {
+		this.localLanguage = localLanguage;
+	}
+
+	@Bean
+    public LocaleChangeInterceptor localeChangeInterceptor() {
+        LocaleChangeInterceptor lci = new LocaleChangeInterceptor();
+        lci.setParamName("lang");
+        return lci;
+    }
+	
+	
+	@Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(localeChangeInterceptor());
+    }
+	
 	public boolean someLibraryMethod() {
 		
-		return false;
+		return true;
 	}
 }
